@@ -1,0 +1,83 @@
+/*
+ * Design tokens. Tailwind v4 turns each --color-* / --font-* / --radius-* value
+ * below into utilities (bg-canvas, text-ink, rounded-card, ...).
+ */
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Neutrals: warm white page, navy text. */
+  --color-canvas: #fbfaf7;
+  --color-surface: #ffffff;
+  --color-ink: #17243b;
+  --color-slate: #4f5d70;
+  --color-line: #e5e2db;
+  --color-line-strong: #cfd3d9;
+  --color-wash: #f1efe9;
+
+  /* Deep navy for hero, chrome and closing. */
+  --color-navy: #0d1a35;
+  --color-navy-2: #13244a;
+  --color-navy-3: #1c3366;
+
+  /* Teal: quantitative evidence and active interaction. */
+  --color-accent: #0f766e;
+  --color-accent-strong: #0b5a54;
+  --color-accent-soft: #dff2ef;
+  --color-teal-bright: #5eead4;
+
+  /* Grouping accents, each with a pale surface. */
+  --color-blue: #2b5ab0;
+  --color-blue-soft: #e8f0fb;
+  --color-blue-mid: #cfe0f6;
+  --color-violet: #6644b8;
+  --color-violet-soft: #efeafa;
+  --color-violet-mid: #dcd2f3;
+  --color-amber: #9a5b06;
+  --color-amber-soft: #fbf0d8;
+  --color-amber-mid: #f3deaa;
+  --color-gap: #9b4a4a;
+  --color-gap-soft: #f6e8e8;
+  --color-gap-mid: #e3bcbc;
+
+  /* Evidence label families: tint background + strong text, always paired with a text label. */
+  --color-ev-research-bg: #e8eef8;
+  --color-ev-research-fg: #1e3a66;
+  --color-ev-vendor-bg: #ecedf7;
+  --color-ev-vendor-fg: #373b78;
+  --color-ev-internal-bg: #f3ece2;
+  --color-ev-internal-fg: #67461b;
+  --color-ev-poc-bg: #efe9f6;
+  --color-ev-poc-fg: #4d2c7e;
+  --color-ev-proposed-bg: #e1f2ef;
+  --color-ev-proposed-fg: #0b5a54;
+  --color-ev-validate-bg: #fbf0d9;
+  --color-ev-validate-fg: #774907;
+
+  /* Executive surfaces, from the calm Market chapter: flat neutral outlines, one teal tint, one heading ink. */
+  --color-heading: #132139;
+  --color-hairline: #dedfda;
+  --color-hairline-soft: #e6e7e2;
+  --color-tint: #e8f1ef;
+  --color-tint-line: #cfe3df;
+  --color-quiet: #f7f7f4;
+
+  --radius-card: 0.875rem;
+  --radius-panel: 1.25rem;
+
+  --shadow-lift: 0 1px 2px rgb(13 26 53 / 0.06), 0 8px 24px rgb(13 26 53 / 0.08);
+}
+
+:root {
+  /* Sticky chrome heights, shared by the header, the section nav and anchor offsets. */
+  --header-h: 4rem;
+  --subnav-h: 2.75rem;
+  /* Sections start exactly under the sticky chrome; their own top padding clears the heading. */
+  --anchor-offset: calc(var(--header-h) + var(--subnav-h));
+}
+
+/* At xl the left rail replaces the horizontal section nav, so only the header is sticky. */
+@media (min-width: 80rem) {
+  :root {
+    --subnav-h: 0rem;
+  }
+}
