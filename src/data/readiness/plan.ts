@@ -154,3 +154,51 @@ export const commitmentCopy = {
   stageNote: 'A filter for which checks may apply, not a progress tracker. Stage mapping is proposed.',
   closing: 'Resolve critical requirements before making the commitment that depends on them.',
 }
+
+// ---------------------------------------------------------------- capability panel
+/**
+ * The three short statements shown for each selected area. "Not yet established" refers to this review, not to a
+ * confirmed absence. Bases are checked against the requirement records and the starting-point register: where a
+ * proposed statement went beyond them it was narrowed (wealth expertise, system fit, enterprise delivery,
+ * commercial viability). Actions and outputs are proposals, not assigned work.
+ */
+export const areaPanel: Record<DimensionId, { basis: string; notYet: string; action: string; output: string }> = {
+  domain: {
+    basis: 'Centrum discovery and Liquidity Pulse identify RM, service, processing and oversight needs.',
+    notYet: 'A named wealth reviewer and agreed rules for evaluating the selected task.',
+    action: 'Assign a wealth expert to define and evaluate the first workflow.',
+    output: 'Agreed workflow boundaries and expert-reviewed test cases.',
+  },
+  offerings: {
+    basis: 'Liquidity Pulse provides a POC; Centrum discovery informs potential service and oversight solutions.',
+    notYet: 'A maintained package with defined scope, prerequisites and acceptance criteria.',
+    action: 'Review existing assets and specify one candidate package.',
+    output: 'Package definition separating reusable elements from customer-specific work.',
+  },
+  ecosystem: {
+    basis: 'Discovery discusses differentiated access and channel preferences; integration claims reviewed are general.',
+    notYet: 'Target-account interfaces, permissions and source-use rights.',
+    action: 'Assess the selected workflow in the customer’s actual environment.',
+    output: 'Integration and access plan with dependencies and effort.',
+  },
+  delivery: {
+    basis: 'Company-published assurance, governance and lifecycle claims give a starting point for review.',
+    notYet: 'Workflow-specific security, quality and operating evidence.',
+    action: 'Review existing assurance evidence and test the chosen deployment scope.',
+    output: 'Evaluation plan and proposed operating responsibilities.',
+  },
+  customer: {
+    basis: 'Motilal agent work is reported; Centrum discovery captures customer requirements.',
+    notYet: 'Accepted scope, measurable outcomes and reference permissions for relevant delivery.',
+    action: 'Retrieve delivery and acceptance evidence, starting with Motilal.',
+    output: 'Scoped customer case brief with verified results and limitations.',
+  },
+  commercial: {
+    basis: 'Motilal and Centrum are named account relationships where demand can be investigated.',
+    notYet: 'Willingness to pay, delivery cost and sustainable operating economics.',
+    action: 'Build an account-specific commercial case with sales, delivery and finance.',
+    output: 'Proposed price and cost estimate with explicit assumptions.',
+  },
+}
+
+export const areaPanelLabels = { basis: 'Current basis', notYet: 'Not yet established', action: 'Recommended action', output: 'Output:' }

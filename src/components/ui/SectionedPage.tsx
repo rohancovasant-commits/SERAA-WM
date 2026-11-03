@@ -23,6 +23,8 @@ interface SectionedPageProps {
    * chapter selector, and must render the page h1 with id "introduction-title".
    */
   overview?: (api: { eyebrow: string; select: (id: string) => void }) => ReactNode
+  /** Label for the first chapter when it is the overview (default "Overview"). */
+  introLabel?: string
   /** Page headline: the h1 of the opening, and a visually hidden h1 on other chapters. */
   heading?: string
   /** Chapter ids whose view keeps only the bottom Previous/Next pair, so the left rail does not repeat it. */
@@ -37,10 +39,10 @@ interface SectionedPageProps {
  * Shared page frame. Shows one chapter at a time: the left rail, the small-screen menu and the Previous/Next buttons
  * all change chapter, with a short fade. The chapter is kept in the URL hash, so links and reloads land on it.
  */
-export function SectionedPage({ title, sections: contentSections, intro, overview, heading, railPagerHiddenOn: hiddenOn, closing, children }: SectionedPageProps) {
+export function SectionedPage({ title, sections: contentSections, intro, overview, introLabel, heading, railPagerHiddenOn: hiddenOn, closing, children }: SectionedPageProps) {
   const number = navItems.find((item) => item.label === title)?.number
   // With an intro, the page's first chapter is the introduction itself, ahead of the content chapters.
-  const sections: SectionLink[] = intro ? [{ id: 'introduction', label: overview ? 'Overview' : 'Introduction' }, ...contentSections] : contentSections
+  const sections: SectionLink[] = intro ? [{ id: 'introduction', label: overview ? (introLabel ?? 'Overview') : 'Introduction' }, ...contentSections] : contentSections
   // An executive overview is a whole screen with its own next-action bar, so the rail does not repeat Previous/Next there.
   const railPagerHiddenOn = overview ? ['introduction', ...(hiddenOn ?? [])] : hiddenOn
   const content = Children.toArray(children)

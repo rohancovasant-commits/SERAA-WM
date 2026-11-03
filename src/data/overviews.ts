@@ -33,7 +33,7 @@ export const evidenceSeparation =
 /* ------------------------------------------------------------- Opportunity */
 
 export const opportunityOverview = {
-  headline: 'Build an account-led wealth AI business.',
+  headline: 'Our focus within BFSI: Wealth Management',
   detail: {
     recommendation: 'Develop an account-led wealth offering, beginning with accessible non-bank wealth businesses and a measurable workflow gap.',
     qualifier: 'The market map is a selected research list, not national market size, a qualified pipeline or evidence of demand.',
@@ -146,7 +146,7 @@ export const offeringsOverview = {
 /* --------------------------------------------------------------- Readiness */
 
 export const readinessOverview = {
-  headline: 'Establish the first offer’s scope before committing to delivery.',
+  headline: 'What must SERAA add for wealth?',
   startingLabel: 'Starting assets',
   startingPoints: [
     { id: 'motilal' as const, name: 'Motilal', label: 'Reported engagement' },

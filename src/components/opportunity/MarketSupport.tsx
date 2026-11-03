@@ -6,6 +6,7 @@ import { RoleDiagram } from '../market/RoleDiagram'
 import { UserScale } from '../market/UserScale'
 import { familyOfficeNote, icpTitle, rolesTitle, scaleTitle } from '../../data/opportunity/market'
 import { PanelLabel } from './shared'
+import { marketCase, pursuitGroups } from '../../data/opportunity/case'
 
 interface MarketSupportProps {
   open: boolean
@@ -23,7 +24,34 @@ export function MarketSupport({ open, onClose, returnFocusRef }: MarketSupportPr
   return (
     <DetailDrawer open={open} onClose={onClose} title="Market evidence and definitions" eyebrow="Supporting evidence" returnFocusRef={returnFocusRef} wide>
       <div className="space-y-10">
-        <section aria-labelledby="support-fit">
+        <section aria-labelledby="support-directions">
+          <h3 id="support-directions" className={sectionTitle}>
+            {marketCase.landscapeLabel}
+          </h3>
+          <ul className="divide-y divide-line">
+            {pursuitGroups.map((g) => (
+              <li key={g.id} className="py-3 first:pt-0 leading-snug">
+                <p className="font-semibold text-heading">
+                  {g.step}. {g.label}: {g.who}
+                </p>
+                <p className="text-slate">{g.why}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 rounded-card bg-wash px-4 py-3 leading-snug">{marketCase.landscapeNote}</p>
+          <p className="mt-5 font-semibold text-heading">{marketCase.populationsLabel}</p>
+          <ul className="mt-2 divide-y divide-line">
+            {marketCase.populations.map((p) => (
+              <li key={p.id} className="py-2.5 first:pt-0 leading-snug">
+                <span className="font-semibold text-heading">{p.label}: </span>
+                {p.text}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 leading-snug text-slate">{marketCase.implication}</p>
+        </section>
+
+        <section aria-labelledby="support-fit" className="border-t border-line pt-8">
           <h3 id="support-fit" className={sectionTitle}>
             {icpTitle}
           </h3>

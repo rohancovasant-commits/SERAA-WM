@@ -1,3 +1,4 @@
+import { overview } from '../data/opportunity/case'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AccountExplorer, type ExplorerTarget } from '../components/opportunity/AccountExplorer'
@@ -18,6 +19,8 @@ import { CompetitionSection } from './opportunity/CompetitionSection'
 import { PartnershipsSection } from './opportunity/PartnershipsSection'
 import { StartingPositionSection } from './opportunity/StartingPositionSection'
 import { CommercialSection } from './opportunity/CommercialSection'
+
+const panelLabel = 'text-sm font-semibold uppercase tracking-[0.08em] text-slate'
 
 const intro: PageIntro = {
   summary: opening.subtitle,
@@ -74,7 +77,33 @@ export function OpportunityPage() {
         eyebrow={`Supporting evidence · ${SNAPSHOT_DATE}`}
         returnFocusRef={evidence.trigger}
       >
-        <DemandAlternativesPanel onGo={goTo} />
+        <div className="space-y-8">
+          <section>
+            <h3 className={panelLabel}>{overview.evidenceLabel}</h3>
+            <ul className="mt-2 divide-y divide-line">
+              {overview.evidence.map((item) => (
+                <li key={item.name} className="py-2.5 first:pt-0 leading-snug">
+                  <span className="font-semibold text-heading">{item.name}: </span>
+                  {item.basis}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-[0.9375rem] text-slate">{overview.modelNote}</p>
+          </section>
+          <section>
+            <h3 className={panelLabel}>{overview.considerationsLabel}</h3>
+            <ul className="mt-2 divide-y divide-line">
+              {overview.considerations.map((item) => (
+                <li key={item.id} className="py-2.5 first:pt-0 leading-snug">
+                  <span className="font-semibold text-heading">{item.label}. </span>
+                  {item.text}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 font-semibold leading-snug text-heading">{overview.boundary}</p>
+          </section>
+          <DemandAlternativesPanel onGo={goTo} />
+        </div>
       </DetailDrawer>
     </>
   )

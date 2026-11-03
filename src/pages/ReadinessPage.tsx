@@ -1,39 +1,51 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { DetailDrawer } from '../components/ui/DetailDrawer'
 import { PageClosing } from '../components/ui/PageClosing'
-import { SectionedPage } from '../components/ui/SectionedPage'
-import { AssessmentExplorer } from '../components/readiness/AssessmentExplorer'
+import { Section } from '../components/ui/Section'
+import { SourceList } from '../components/ui/SourceEntry'
+import { RatingBadge } from '../components/readiness/RatingBadge'
 import { RatingsMethod } from '../components/readiness/RatingsMethod'
+import { ReadinessRail } from '../components/readiness/ReadinessRail'
+import { SupportingAssessment } from '../components/readiness/SupportingAssessment'
 import { StartingPointsPanel } from '../components/overview/StartingPointsPanel'
 import { useExplorer } from '../components/readiness/useExplorer'
 import { exec } from '../components/exec/styles'
 import { useDrawer } from '../hooks/useDrawer'
-import type { PageIntro } from '../data/types'
+import type { SourceId } from '../data/types'
 import { SNAPSHOT_DATE } from '../data/evidence'
-import { assessmentCopy, legacyAnchors, overviewCopy, ratingsPanel, readinessClosing, readinessHero, readinessSections } from '../data/readiness/page'
-import { requirements, type DimensionId } from '../data/readiness/requirements'
+import { capabilityQuestions as cq, legacyAnchors, overviewCopy, ratingsPanel, readinessClosing, type SupportingTab } from '../data/readiness/page'
+import { requirements } from '../data/readiness/requirements'
 import { ReadinessOverview } from './readiness/ReadinessOverview'
-import { AssessmentSection } from './readiness/AssessmentSection'
-import { CommitmentSection } from './readiness/CommitmentSection'
-import { ActionsSection } from './readiness/ActionsSection'
 
+const label = 'text-sm font-semibold uppercase tracking-[0.08em] text-slate'
+
+/**
+ * Readiness: one executive slide. The detailed assessment, the five capability questions and the rating methodology
+ * are separate panels; each opens from the slide or the rail, and none opens from inside another (so no nested dialogs).
+ */
 export function ReadinessPage() {
   const navigate = useNavigate()
   const { hash } = useLocation()
-  const ratings = useDrawer<true>()
   const startingPoints = useDrawer<string>()
-  const requirementsPanel = useDrawer<true>()
+  const questions = useDrawer<true>()
+  const supporting = useDrawer<true>()
+  const ratings = useDrawer<true>()
+  const [tab, setTab] = useState<SupportingTab>('areas')
   const explorer = useExplorer()
 
   useEffect(() => {
     document.title = 'Readiness · SERAA Wealth Management Strategy'
   }, [])
 
-  // Old chapter anchors land on the chapter that now carries their content.
+  // Old chapter anchors (and links from other pages) open the supporting assessment on the tab that now carries them.
   useEffect(() => {
     const target = legacyAnchors[hash.slice(1)]
-    if (target) navigate({ hash: target }, { replace: true })
+    if (!target) return
+    setTab(target)
+    supporting.open(true, document.activeElement as HTMLElement | null)
+    navigate({ hash: '' }, { replace: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hash, navigate])
 
   // Opening from a named starting point scrolls the panel to that entry.
@@ -44,54 +56,49 @@ export function ReadinessPage() {
     return () => window.clearTimeout(timer)
   }, [startId])
 
-  const goTo = (id: string) => {
-    navigate({ hash: id }, { replace: true })
+  const openSupporting = (opener?: HTMLElement | null, next?: SupportingTab) => {
+    if (next) setTab(next)
+    supporting.open(true, opener)
   }
 
-  // One requirements panel serves the capability areas and the commitment checks.
-  const inspectArea = (dimension: DimensionId, opener: HTMLElement) => {
-    explorer.selectDimension(dimension)
-    requirementsPanel.open(true, opener)
-  }
-  const openRequirement = (id: string, opener?: HTMLElement) => {
+  // From the questions panel: close it, then open the supporting assessment on that requirement.
+  const openRequirement = (id: string) => {
     const requirement = requirements.find((r) => r.id === id)
     if (!requirement) return
     explorer.selectDimension(requirement.dimension)
     explorer.select(id)
-    requirementsPanel.open(true, opener)
+    const opener = questions.trigger.current
+    questions.close()
+    openSupporting(opener, 'requirements')
   }
 
-  const intro: PageIntro = {
-    summary: readinessHero.title,
-    status: readinessHero.status,
-    note: readinessHero.note,
-    action: { label: readinessHero.secondaryAction, onOpen: (opener) => ratings.open(true, opener) },
-  }
+  const questionSources = Array.from(
+    new Set<SourceId>(requirements.filter((r) => cq.items.some((q) => q.refs.includes(r.id))).flatMap((r) => r.sourceIds)),
+  )
 
   return (
     <>
-      <SectionedPage
-        title="Readiness"
-        sections={readinessSections}
-        heading={readinessHero.title}
-        intro={intro}
-        overview={({ eyebrow, select }) => (
-          <ReadinessOverview eyebrow={eyebrow} onOpenStartingPoints={(opener, id) => startingPoints.open(id ?? '', opener)} onGo={select} />
-        )}
-        closing={
-          <PageClosing
-            id="readiness-closing"
-            eyebrow="Readiness principle"
-            statement={readinessClosing.statement}
-            primary={readinessClosing.primary}
-            secondary={readinessClosing.secondary}
-          />
-        }
-      >
-        <AssessmentSection onInspect={inspectArea} />
-        <CommitmentSection onOpenRequirement={openRequirement} />
-        <ActionsSection />
-      </SectionedPage>
+      <div className="xl:flex">
+        <ReadinessRail onOpenSupporting={(opener) => openSupporting(opener, 'areas')} onOpenRatings={(opener) => ratings.open(true, opener)} />
+        <div className="min-w-0 flex-1">
+          <Section id="introduction" headingId="introduction-title" surface="warm">
+            <ReadinessOverview
+              eyebrow="04 / Readiness"
+              onOpenStartingPoints={(opener, id) => startingPoints.open(id ?? '', opener)}
+              onOpenQuestions={(opener) => questions.open(true, opener)}
+              onOpenSupporting={(opener) => openSupporting(opener, 'areas')}
+            />
+          </Section>
+        </div>
+      </div>
+
+      <PageClosing
+        id="readiness-closing"
+        eyebrow="Readiness principle"
+        statement={readinessClosing.statement}
+        primary={readinessClosing.primary}
+        secondary={readinessClosing.secondary}
+      />
 
       <DetailDrawer
         open={startingPoints.value !== null}
@@ -102,33 +109,100 @@ export function ReadinessPage() {
       >
         <StartingPointsPanel
           onGoToRequests={() => {
+            const opener = startingPoints.trigger.current
             startingPoints.close()
-            goTo('actions')
+            openSupporting(opener, 'requests')
           }}
         />
-        <section className="mt-8 border-t border-line pt-6">
-          <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-slate">{overviewCopy.panelNotes.label}</h3>
-          <ul className="mt-3 space-y-2">
-            {overviewCopy.panelNotes.items.map((item) => (
-              <li key={item} className="flex gap-2.5 leading-snug">
-                <span aria-hidden className="mt-[0.55em] size-1.5 shrink-0 rounded-full bg-accent" />
-                {item}
-              </li>
-            ))}
-          </ul>
-        </section>
+        {overviewCopy.panelNotes.map((group) => (
+          <section key={group.label} className="mt-8 border-t border-line pt-6">
+            <h3 className={label}>{group.label}</h3>
+            <ul className="mt-3 space-y-2">
+              {group.items.map((item) => (
+                <li key={item} className="flex gap-2.5 leading-snug">
+                  <span aria-hidden className="mt-[0.55em] size-1.5 shrink-0 rounded-full bg-accent" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </DetailDrawer>
+
+      <DetailDrawer open={questions.value !== null} onClose={questions.close} title={cq.title} eyebrow={cq.eyebrow} returnFocusRef={questions.trigger}>
+        <div className="space-y-8">
+          <p className="rounded-card bg-wash px-4 py-3 leading-snug">{cq.intro}</p>
+          <ol className="divide-y divide-line border-y border-line">
+            {cq.items.map((q, i) => {
+              const refs = requirements.filter((r) => q.refs.includes(r.id))
+              return (
+                <li key={q.id} className="py-5">
+                  <h3 className="text-lg font-bold leading-snug text-heading">
+                    {i + 1}. {q.title}
+                  </h3>
+                  <p className="mt-1 leading-snug">{q.question}</p>
+                  <p className="mt-2 text-[0.9375rem] font-semibold text-heading">
+                    Status: {cq.status}
+                    <span className="font-normal text-slate"> · evidence is insufficient to answer for a selected workflow</span>
+                  </p>
+                  <p className={`mt-2 ${exec.meta}`}>Existing evidence</p>
+                  <ul className="mt-1 space-y-1">
+                    {refs.map((r) => (
+                      <li key={r.id} className="text-[0.9375rem] leading-snug">
+                        <span className="font-semibold text-accent-strong">{r.id}</span> {r.currentEvidence}
+                      </li>
+                    ))}
+                  </ul>
+                  <ul className="mt-3 divide-y divide-line-soft border-y border-line">
+                    {refs.map((r) => (
+                      <li key={r.id}>
+                        <button
+                          type="button"
+                          onClick={() => openRequirement(r.id)}
+                          className="flex w-full flex-wrap items-center gap-x-3 gap-y-1.5 py-2.5 text-left hover:bg-wash"
+                        >
+                          <span className="w-8 shrink-0 text-sm font-bold text-accent-strong">{r.id}</span>
+                          <span className="min-w-0 flex-1 basis-48 text-[0.9375rem] font-semibold leading-snug text-heading">{r.title}</span>
+                          <RatingBadge rating={r.rating} />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              )
+            })}
+          </ol>
+          <section>
+            <h3 className={label}>{cq.outcomesLabel}</h3>
+            <ul className="mt-2 space-y-2">
+              {cq.outcomes.map((o) => (
+                <li key={o} className="flex gap-2.5 leading-snug">
+                  <span aria-hidden className="mt-[0.55em] size-1.5 shrink-0 rounded-full bg-accent" />
+                  {o}
+                </li>
+              ))}
+            </ul>
+          </section>
+          {questionSources.length > 0 && (
+            <section>
+              <h3 className={label}>Sources</h3>
+              <div className="mt-3">
+                <SourceList ids={questionSources} />
+              </div>
+            </section>
+          )}
+        </div>
       </DetailDrawer>
 
       <DetailDrawer
-        open={requirementsPanel.value !== null}
-        onClose={requirementsPanel.close}
-        title={assessmentCopy.panelTitle}
+        open={supporting.value !== null}
+        onClose={supporting.close}
+        title="Supporting assessment"
         eyebrow={`Initial evidence review · ${SNAPSHOT_DATE}`}
-        returnFocusRef={requirementsPanel.trigger}
+        returnFocusRef={supporting.trigger}
         wide
       >
-        <p className={`mb-5 ${exec.meta}`}>{requirements.length} requirements, each rated on its own evidence. Ratings are never averaged or scored.</p>
-        <AssessmentExplorer explorer={explorer} />
+        <SupportingAssessment explorer={explorer} tab={tab} onTab={setTab} />
       </DetailDrawer>
 
       <DetailDrawer

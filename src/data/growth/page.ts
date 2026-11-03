@@ -12,14 +12,22 @@ export const growthHero = {
   secondaryAction: 'View research',
 }
 
+/** Content slides after the first (Win the first offer is the introduction slide). */
 export const growthSections: SectionLink[] = [
-  { id: 'approach', label: 'Approach' },
-  { id: 'sales', label: 'Sales' },
-  { id: 'commercial-model', label: 'Commercial model' },
-  { id: 'partnerships', label: 'Partnerships' },
-  { id: 'ownership', label: 'Ownership' },
-  { id: 'scaling', label: 'Scaling' },
+  { id: 'expand', label: 'Expand what works' },
+  { id: 'organise', label: 'Organise to grow' },
 ]
+export const firstSlideLabel = 'Win the first offer'
+
+/** Old chapter anchors land on the slide that now carries their content. */
+export const legacyAnchors: Record<string, string> = {
+  approach: 'expand',
+  sales: 'introduction',
+  'commercial-model': 'expand',
+  partnerships: 'expand',
+  ownership: 'organise',
+  scaling: 'expand',
+}
 
 export const researchPanel = {
   title: 'Growth research',

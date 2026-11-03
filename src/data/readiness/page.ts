@@ -1,4 +1,4 @@
-import type { SectionLink, SourceId } from '../types'
+import type { SourceId } from '../types'
 import { overviewHeadlines } from '../overviews'
 
 export const readinessHero = {
@@ -12,74 +12,142 @@ export const readinessHero = {
   secondaryAction: 'How ratings work',
 }
 
-/** Content chapters; the Overview is added ahead of them by the page frame, giving four chapters in all. */
-export const readinessSections: SectionLink[] = [
-  { id: 'assessment', label: 'Capability assessment' },
-  { id: 'before-commitment', label: 'Before customer commitment' },
-  { id: 'actions', label: 'Next actions' },
+export type SupportingTab = 'areas' | 'requirements' | 'commitment' | 'requests'
+
+export const supportingTabs: { id: SupportingTab; label: string }[] = [
+  { id: 'areas', label: 'Capability areas' },
+  { id: 'requirements', label: 'Requirements' },
+  { id: 'commitment', label: 'Before commitment' },
+  { id: 'requests', label: 'Evidence requests' },
 ]
 
-/** Old chapter anchors land on the chapter that now carries their content. */
-export const legacyAnchors: Record<string, string> = {
-  overview: 'assessment',
-  'proof-standards': 'assessment',
-  'critical-requirements': 'before-commitment',
+/** Readiness is one slide. Old chapter anchors open the supporting-assessment tab that now carries their content. */
+export const legacyAnchors: Record<string, SupportingTab> = {
+  overview: 'areas',
+  assessment: 'areas',
+  'proof-standards': 'requirements',
+  'before-commitment': 'commitment',
+  'critical-requirements': 'commitment',
+  actions: 'requests',
+}
+
+export const railCopy = {
+  overview: 'Overview',
+  supporting: 'Supporting assessment',
+  ratings: 'How ratings work',
 }
 
 export const overviewCopy = {
-  headline: 'Establish the first offer’s scope before committing to delivery.',
-  today: {
-    label: 'Today',
-    question: 'What can we credibly commit to?',
-    answer: 'A scoped assessment of a candidate wealth workflow.',
-    support: 'Use existing account activity and the Liquidity Pulse POC to investigate capability and customer fit.',
-    note: 'Any delivery commitment needs its own scoped evidence.',
-  },
-  work: {
-    label: 'Work needed',
-    question: 'What still needs work?',
-    items: [
-      { id: 'evidence', label: 'Evidence', text: 'Confirm what has been delivered and accepted.' },
-      { id: 'capability', label: 'Capability', text: 'Determine what to reuse, adapt or build.' },
-      { id: 'ownership', label: 'Ownership', text: 'Agree evaluation, acceptance and support responsibilities.' },
+  headline: 'What must SERAA add for wealth?',
+  finding: 'Wealth-specific readiness is not yet sufficiently assessed to define the build or investment required.',
+  board: {
+    label: 'Classification pending capability review',
+    columns: [
+      { id: 'reuse', label: 'Reuse', question: 'What already works for the chosen wealth workflow?' },
+      { id: 'adapt', label: 'Adapt', question: 'What needs wealth-specific changes or integration?' },
+      { id: 'build', label: 'Build', question: 'What assessed requirements are genuinely unmet?' },
     ],
+    note: 'Missing evidence may require verification—not new engineering.',
   },
-  authorise: {
-    label: 'Authorise next',
-    question: 'What should leadership authorise?',
-    answer: 'A bounded capability and delivery assessment.',
-    needs: ['Accountable lead', 'Access to relevant evidence', 'Scoped team effort'],
-    status: 'Proposed · Resources and cost to agree',
+  deliverable: {
+    tag: 'Next deliverable',
+    title: 'Capability gap assessment for the proposed first offer',
+    outputs: ['Existing capability and proof', 'Required changes and dependencies', 'Delivery effort and cost estimate'],
+    support: 'Review Motilal delivery evidence to verify, Liquidity Pulse and relevant SERAA platform capabilities against the selected workflow.',
+    participantsLabel: 'Proposed participants',
+    participants: 'Platform + delivery + wealth reviewer',
   },
-  output: {
-    label: 'Expected output from the assessment',
-    items: ['Reuse / adapt / build plan', 'Acceptance criteria', 'Proposed operating owner', 'Costed delivery scope'],
-    support: 'Establish what we can offer, what it requires and what it will cost.',
+  starts: {
+    label: 'Starting evidence',
+    items: [
+      { id: 'motilal', name: 'Motilal', status: 'Reported work' },
+      { id: 'centrum', name: 'Centrum', status: 'Discovery' },
+      { id: 'liquidity-pulse', name: 'Liquidity Pulse', status: 'POC' },
+    ],
+    note: 'Different starting points, not three confirmed wealth customers.',
   },
-  starts: [
-    { id: 'motilal', name: 'Motilal Oswal', status: 'Reported agent work' },
-    { id: 'centrum', name: 'Centrum', status: 'Discovery' },
-    { id: 'liquidity-pulse', name: 'Liquidity Pulse', status: 'POC' },
-  ],
-  startsLabel: 'Starting evidence',
-  qualification: 'These are different starting points, not three confirmed wealth customers.',
-  buttons: ['Inspect current evidence', 'Explore capability assessment'] as [string, string],
+  buttons: ['Inspect capability questions', 'Supporting assessment'] as [string, string],
   /** Added to the starting-point evidence panel. */
-  panelNotes: {
-    label: 'What this review does and does not settle',
-    items: [
-      'Production delivery readiness is unresolved in this review; it is not established as absent.',
-      'The next assessment must examine the chosen workflow against actual SERAA capabilities and customer requirements.',
-      'Existing contractual commitments are outside this review unless specifically evidenced.',
-      'A candidate workflow is needed for the assessment. This overview does not approve the launch offer.',
-      'Assessment scope, named ownership, effort, cost boundary and review date must be agreed before work is authorised.',
-      'Formal decision recording remains on the Decisions page.',
-    ],
-  },
+  panelNotes: [
+    {
+      label: 'How to read the overview',
+      items: [
+        'The three initiatives are different starting points, not three confirmed wealth customers.',
+        '“Not demonstrated in this review” does not mean the capability is absent.',
+        'Verify Motilal’s entity, workflow, delivered scope, acceptance, outcomes, operating arrangements and reuse rights.',
+        'Centrum discovery does not establish an accepted deployment.',
+        'Liquidity Pulse remains a POC; quality, adoption and economics require evaluation.',
+        'Accepted delivery and repeatability must be assessed for a defined wealth scope.',
+        'This slide does not replace the existing readiness ratings or reclassify requirements.',
+      ],
+    },
+    {
+      label: 'Scope of this review',
+      items: [
+        'Production delivery readiness is unresolved in this review; it is not established as absent.',
+        'Existing contractual commitments are outside this review unless specifically evidenced.',
+        'A candidate workflow is needed for any assessment. This slide does not select or approve the launch offer.',
+        'Assessment participants, named owner, access to evidence, effort, cost boundary and review date are to be agreed before work is authorised.',
+        'Formal decision recording remains on the Decisions page.',
+      ],
+    },
+  ],
+}
+
+/**
+ * Plain-language review questions behind Reuse / Adapt / Build. They are questions, not confirmed product gaps. The
+ * requirement ids link each to the existing records; the status stays "To assess" until a scoped review of the chosen
+ * workflow says otherwise.
+ */
+export const capabilityQuestions = {
+  title: 'Capability questions',
+  eyebrow: 'Readiness · Reuse, adapt or build',
+  intro: 'These are the questions the review must answer for the selected workflow. They are review questions, not confirmed product gaps.',
+  status: 'To assess',
+  items: [
+    {
+      id: 'permissions',
+      title: 'Knowledge and permissions',
+      question: 'Can existing retrieval respect document, user and client-access permissions?',
+      refs: ['X2', 'X3'],
+    },
+    {
+      id: 'understanding',
+      title: 'Wealth-specific understanding',
+      question: 'What terminology, product knowledge, business rules and workflow boundaries need adaptation?',
+      refs: ['D1', 'D3', 'D4'],
+    },
+    {
+      id: 'evaluation',
+      title: 'Financial-output evaluation',
+      question: 'How will financial facts, calculations, source accuracy and outdated information be evaluated for the selected task?',
+      refs: ['T3', 'D3'],
+    },
+    {
+      id: 'integration',
+      title: 'System integration',
+      question: 'Which relevant connections exist, and which require account-specific work?',
+      refs: ['X1', 'X4'],
+    },
+    {
+      id: 'operation',
+      title: 'Controlled operation',
+      question: 'What human review, monitoring, exception handling and support can be reused?',
+      refs: ['T4', 'T5', 'T6', 'T2'],
+    },
+  ],
+  outcomesLabel: 'The resulting assessment must distinguish',
+  outcomes: [
+    'Retrieve existing proof.',
+    'Adapt or integrate.',
+    'Build a confirmed missing capability.',
+    'Resolve ownership or scope decisions.',
+    'Further verification where a conclusion remains premature.',
+  ],
 }
 
 export const assessmentCopy = {
-  headline: 'What can we build on—and what needs work?',
+  headline: 'Six areas to establish wealth credibility.',
   supports: 'What evidence supports',
   uncertain: 'What remains uncertain',
   next: 'Next work',

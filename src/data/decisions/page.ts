@@ -1,4 +1,4 @@
-import type { SectionLink, SourceId } from '../types'
+import type { SourceId } from '../types'
 import { overviewHeadlines } from '../overviews'
 import type { DecisionStatus, StatementKind } from './types'
 
@@ -11,14 +11,6 @@ export const decisionsHero = {
   primaryAction: 'Review the five decisions',
   secondaryAction: 'Explore the roadmap',
 }
-
-export const decisionsSections: SectionLink[] = [
-  { id: 'overview', label: 'How to read' },
-  { id: 'decisions', label: 'Decisions' },
-  { id: 'roadmap', label: 'Roadmap' },
-  { id: 'next-review', label: 'Next review' },
-  { id: 'decision-record', label: 'Decision record' },
-]
 
 /** The three statement types. The same labels are used for every decision. */
 export const statementTypes: Record<StatementKind, { label: string; meaning: string }> = {
